@@ -38,3 +38,10 @@ Understand the *why* behind CI/CD for data engineering before touching any tooli
 - Verified Azure subscription access (Free Tier sufficient for this scale of resources).
 - Explored the Azure Portal home page and got oriented with resource group navigation, since almost every subsequent action starts from a resource group.
 
+### Day 4 — Resource Groups for All Three Environments
+- Created three isolated resource groups, one per environment, following a consistent naming convention:
+  - `ADF-CICD-Dev`
+  - `ADF-CICD-QA`
+  - `ADF-CICD-Prod`
+- **Design decision:** keeping environments in separate resource groups (rather than tagging resources within one group) makes RBAC scoping, cost tracking, and eventual teardown much cleaner — and maps directly onto how the Azure DevOps Service Connection will later be scoped.
+
