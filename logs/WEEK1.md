@@ -45,3 +45,15 @@ Understand the *why* behind CI/CD for data engineering before touching any tooli
   - `ADF-CICD-Prod`
 - **Design decision:** keeping environments in separate resource groups (rather than tagging resources within one group) makes RBAC scoping, cost tracking, and eventual teardown much cleaner — and maps directly onto how the Azure DevOps Service Connection will later be scoped.
 
+### Day 5 — Data Factory Provisioning (Dev)
+- Provisioned the first Azure Data Factory instance (V2) inside `ADF-CICD-Dev`.
+- **Naming mistake caught early:** first attempt accidentally named the Data Factory after the storage account convention instead of its own (`adf-storage-dev` instead of `adf-<project>-dev`). Deleted and recreated rather than patching via the ARM template UI, since it was faster at this stage of the project.
+- Confirmed deployment via the **Deployment → Template** view in the portal — first hands-on look at the ARM template that underlies every ADF resource, which becomes central to the CI/CD pipeline later.
+
+### Day 6 — Storage Account (ADLS Gen2) + Key Vault
+- Provisioned the Storage Account for Dev, explicitly selecting:
+  - **Standard performance tier**
+  - **LRS** (Locally Redundant Storage — sufficient for this workload, no cross-region replication needed)
+  - ✅ **Hierarchical Namespace enabled** — flagged as a critical, easy-to-miss checkbox; without it the account behaves as flat blob storage rather than a true data lake.
+- Provisioned Key Vault for Dev — noted at this stage (to be resolved in Week 2) that Key Vault's default **RBAC-based access control** blocks even the resource owner from creating secrets until an explicit **Key Vault Administrator** role assignment is made.
+
