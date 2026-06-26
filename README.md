@@ -1,6 +1,6 @@
 # ci-cd-azure-pipeline
 
-> **Automated ARM template deployment pipeline for multi-supplier data ingestion — because bad data doesn't stand a chance.**
+> **Enterprise-grade CI/CD pipeline for automated multi-supplier data ingestion and transformation on Azure.**
 
 [![Azure DevOps](https://img.shields.io/badge/Azure%20DevOps-CI%2FCD-0078D7?style=flat&logo=azuredevops&logoColor=white)](https://dev.azure.com)
 [![Azure Data Factory](https://img.shields.io/badge/ADF-Orchestration-0072C6?style=flat&logo=microsoftazure&logoColor=white)](https://azure.microsoft.com/en-us/products/data-factory)
@@ -18,11 +18,11 @@
 
 ## Problem Statement
 
-Global MNCs like Walmart, Amazon, and Unilever receive daily data drops from **hundreds of suppliers** — each in a completely different format. One supplier sends a UTF-8 CSV with English column names. Another sends an Excel file with merged headers. A third sends a JSON with nested arrays. The result: Data Engineers spend 4+ hours every day doing manual cleanup in Excel, with zero auditability and no way to track which rows failed and why.
+Large-scale enterprise environments frequently receive daily data payloads from hundreds of external suppliers, often in heterogeneous formats (CSV, JSON, XLSX) with inconsistent schemas and encodings. This fragmentation typically requires significant manual intervention for data cleaning and validation, leading to high operational overhead and poor auditability.
 
-**arm-and-dangerous** solves this with a fully automated, end-to-end Azure data pipeline. Five simulated global supplier feeds (CSV, XLSX, JSON, TSV, and schema-drifted CSV) are ingested, validated, cleaned, and loaded into a Bronze → Silver → Gold medallion lakehouse — with every bad row quarantined, every schema change logged, and the entire pipeline deployed automatically via Azure DevOps CI/CD using ARM templates.
+This project implements a fully automated, end-to-end Azure data pipeline to address this challenge. It ingests, validates, standardizes, and processes five heterogeneous supplier feeds into a Bronze → Silver → Gold Medallion Lakehouse architecture. The solution features automated bad-row quarantine, comprehensive schema evolution tracking, and is deployed entirely via Azure DevOps CI/CD using ARM templates.
 
-The mini-extension adds a **schema-drift detector**: when a supplier changes their column names (the #1 cause of production pipeline failures), the pipeline detects it, logs it, and self-heals — without human intervention.
+A core feature is the **schema-drift detector**: it automatically identifies when a supplier modifies upstream column definitions, logs the schema evolution, and enables the pipeline to fail gracefully or self-heal without manual engineering intervention.
 
 ---
 
@@ -72,8 +72,8 @@ The mini-extension adds a **schema-drift detector**: when a supplier changes the
 ### Step 1 — Clone the repo
 
 ```bash
-git clone https://github.com/<your-username>/arm-and-dangerous.git
-cd arm-and-dangerous
+git clone https://github.com/<your-username>/ci-cd-azure-pipeline.git
+cd ci-cd-azure-pipeline
 ```
 
 ### Step 2 — Set up Azure resources
@@ -183,7 +183,7 @@ audit.quarantine_log (
 ## Project Structure
 
 ```
-arm-and-dangerous/
+ci-cd-azure-pipeline/
 │
 ├── adf/                          # ADF pipeline JSON definitions
 │   ├── pipelines/
