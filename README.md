@@ -258,18 +258,7 @@ ci-cd-azure-pipeline/
 
 ---
 
-## What I'd Do in 3rd Year
 
-See [`docs/roadmap_3rd_year.md`](docs/roadmap_3rd_year.md) for the full plan. Summary:
-
-| Timeline | Extension |
-|----------|-----------|
-| **Aug–Sep 2026** | Add CDC (Change Data Capture) source alongside CSV drops — same pipeline, real-time source |
-| **Oct–Nov 2026** | Add data contracts (one per supplier) using dbt-databricks + schema enforcement |
-| **Nov–Dec 2026** | Move to Databricks Lakehouse with Unity Catalog for governance + lineage |
-| **3rd Year Internship** | This becomes the **B4 CDC Replicator** project — same architecture, real-time source, enterprise scale |
-
----
 
 ## License
 
