@@ -57,3 +57,57 @@ Understand the *why* behind CI/CD for data engineering before touching any tooli
   - ✅ **Hierarchical Namespace enabled** — flagged as a critical, easy-to-miss checkbox; without it the account behaves as flat blob storage rather than a true data lake.
 - Provisioned Key Vault for Dev — noted at this stage (to be resolved in Week 2) that Key Vault's default **RBAC-based access control** blocks even the resource owner from creating secrets until an explicit **Key Vault Administrator** role assignment is made.
 
+### Day 7 — Planning & Folder Structure
+- Finalized the repository folder structure to be used from Week 2 onward (`cicd/`, `arm-params/`, `logs/`).
+- Wrote out the Week 2–5 sprint plan so each week has a single clear technical theme rather than mixing concerns.
+
+---
+
+## 🏗️ Resources Provisioned This Week
+
+| Resource | Environment | Notes |
+|---|---|---|
+| Resource Group `ADF-CICD-Dev` | Dev | ✅ |
+| Resource Group `ADF-CICD-QA` | QA | ✅ (created, configured in Week 2) |
+| Resource Group `ADF-CICD-Prod` | Prod | ✅ (created, configured in Week 5) |
+| Azure Data Factory (Dev) | Dev | ✅ Provisioned, not yet Git-connected |
+| Storage Account / ADLS Gen2 (Dev) | Dev | ✅ Hierarchical namespace confirmed |
+| Key Vault (Dev) | Dev | ✅ Provisioned, RBAC access issue noted |
+
+---
+
+## 🧠 Technical Decisions
+
+| Decision | Reasoning |
+|---|---|
+| Separate resource group per environment | Cleaner RBAC scoping, cost isolation, simpler teardown |
+| ADLS Gen2 over plain Blob Storage | Hierarchical namespace required for data-lake-style folder semantics used later in pipeline design |
+| LRS over GRS | Non-critical training workload; no cross-region DR requirement for this project's scope |
+| Delete-and-recreate over ARM-edit for the naming mistake | Faster at this stage; ARM template editing workflow intentionally deferred to when it's actually needed (Week 4) |
+
+---
+
+## 🚧 Problems & Solutions
+
+| Problem | Solution |
+|---|---|
+| Data Factory named incorrectly on first attempt | Deleted and recreated with correct naming convention rather than patching the ARM template manually |
+| Uncertainty on Hierarchical Namespace default state | Explicitly verified the checkbox before proceeding — a skipped step here would have silently broken Gen2-dependent features later |
+| Key Vault "operation not allowed by RBAC" seen when browsing secrets | Logged as a known blocker to resolve in Week 2 (requires explicit `Key Vault Administrator` role assignment) |
+
+---
+
+## 📚 Learnings
+
+- ADF's "Live Mode" is not a Git-tracked state by default — Git integration has to be explicitly configured (this becomes the Week 2 focus).
+- Every object created via the ADF UI has an ARM template equivalent — the drag-and-drop canvas is a UI layer over declarative JSON, not a separate system.
+- Environment parity (matching resource types/config across Dev/QA/Prod) has to be intentional and manual at this stage — automating it is listed as a Future Enhancement in the master README.
+
+## ✅ Week 1 Deliverables
+- [x] Architecture diagram (CI half + CD half)
+- [x] 3 Resource Groups provisioned
+- [x] Dev environment: Data Factory + Storage (ADLS Gen2) + Key Vault live
+- [x] Project folder structure finalized
+- [x] Sprint plan for Weeks 2–5 documented
+
+**Next week:** Connect Dev's Data Factory to Azure DevOps Git, implement branch policies, configure Managed Identity access to Storage and Key Vault.
