@@ -26,3 +26,15 @@ Move Azure Data Factory from an ungoverned "Live Mode only" state into a fully G
 - Verified this via **Organization Settings → Microsoft Entra**, confirming the directory binding before proceeding.
 - Created the Azure DevOps project (`ADF-CICD`) using the **Agile** process template, with **Git** as the version control backend.
 
+### Day 2 — Repository Creation & Initial Structure
+- Created a dedicated Git repository (`ADF-CICD-Repo`) inside the project, separate from the default auto-created repo, with a starter README commit.
+- Confirmed the repository started with a single `main` branch and zero pipeline history — the clean baseline the ADF Git integration will sync into.
+- Disabled unused Azure DevOps surface area (Releases, Task Groups, Deployment Groups) in Project Settings, since this project standardizes on **YAML pipelines**, which Microsoft has explicitly been recommending over classic Release Pipelines since well before this project started.
+
+### Day 3 — Connecting ADF to Git
+- From ADF Studio → **Manage → Git Configuration**, connected the Dev Data Factory to the new Azure Repos repository.
+- Configured the two critical properties:
+  - **Collaboration branch:** `main`
+  - **Publish branch:** `adf_publish` (auto-managed, not human-edited)
+- Confirmed via the branch dropdown in ADF Studio that `main` and `adf_publish` now both existed, with `main` reflecting Live Mode's current (empty) state.
+
