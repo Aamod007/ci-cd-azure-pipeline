@@ -38,3 +38,9 @@ Move Azure Data Factory from an ungoverned "Live Mode only" state into a fully G
   - **Publish branch:** `adf_publish` (auto-managed, not human-edited)
 - Confirmed via the branch dropdown in ADF Studio that `main` and `adf_publish` now both existed, with `main` reflecting Live Mode's current (empty) state.
 
+### Day 4 — Branch Policy Enforcement
+- Applied a branch policy on `main`:
+  - **Minimum reviewer count: 1**
+  - **Allow requester to approve their own changes: enabled** (single-developer setting for this project; documented as something to disable in a real multi-developer team)
+- Verified the policy was live by confirming `main` could no longer be edited directly from ADF Studio without going through a feature branch + PR.
+
