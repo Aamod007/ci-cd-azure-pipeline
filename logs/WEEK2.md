@@ -44,3 +44,12 @@ Move Azure Data Factory from an ungoverned "Live Mode only" state into a fully G
   - **Allow requester to approve their own changes: enabled** (single-developer setting for this project; documented as something to disable in a real multi-developer team)
 - Verified the policy was live by confirming `main` could no longer be edited directly from ADF Studio without going through a feature branch + PR.
 
+### Day 5 — First Feature Branch & Pull Request Workflow
+- Created `feature/branch` directly from ADF Studio's branch dropdown, confirming it branched cleanly off `main` with zero pipeline conflicts against any other in-progress branch.
+- Made a trivial change (empty pipeline) in the feature branch, then walked the full PR lifecycle end-to-end for the first time: **Create PR → Reviewer approval → Complete (fast-forward merge)** — confirming the merged change appeared in `main` immediately and the feature branch was auto-deleted post-merge, as expected.
+
+### Day 6 — Managed Identity → Storage RBAC
+- Located the Dev Data Factory's **System-Assigned Managed Identity** under Settings → Identity (Object ID confirmed — critical to verify this is the *system-assigned* identity, not accidentally a *user-assigned* one, which is not the recommended pattern).
+- Created the `raw` container in the Dev ADLS Gen2 account.
+- Granted the identity the **Storage Blob Data Contributor** role via **IAM → Add role assignment**, selecting "Managed Identity" as the member type and filtering by the Data Factory's name specifically (a step that's easy to fumble if you search under the wrong member category).
+
