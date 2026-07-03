@@ -53,3 +53,63 @@ Move Azure Data Factory from an ungoverned "Live Mode only" state into a fully G
 - Created the `raw` container in the Dev ADLS Gen2 account.
 - Granted the identity the **Storage Blob Data Contributor** role via **IAM → Add role assignment**, selecting "Managed Identity" as the member type and filtering by the Data Factory's name specifically (a step that's easy to fumble if you search under the wrong member category).
 
+### Day 7 — Key Vault Access Resolution
+- Hit the expected RBAC blocker from Week 1: attempting to create a secret returned *"operation not allowed by RBAC... please wait several minutes for role assignments to become effective."*
+- Root cause identified: the Key Vault's **Access Configuration** was set to **Azure role-based access control**, which requires an explicit `Key Vault Administrator` IAM role before *any* account — including the owner — can manage secrets.
+- Resolved in two steps:
+  1. Assigned own account the **Key Vault Administrator** role via IAM.
+  2. Switched **Access Configuration** to **Vault access policy** — required separately, because ADF's Web Activity / linked-service secret retrieval calls the Key Vault's data-plane API, which only respects Access Policies, not the management-plane RBAC role alone.
+- Granted the Data Factory's Managed Identity **Get/List** secret permissions via the resulting Access Policy screen.
+
+---
+
+## 🏗️ Configuration Completed This Week
+
+| Item | Status |
+|---|---|
+| Azure DevOps org + project | ✅ |
+| Git repository created | ✅ |
+| ADF (Dev) connected to Git | ✅ Collaboration: `main`, Publish: `adf_publish` |
+| Branch policy on `main` | ✅ Min. 1 reviewer |
+| First feature branch → PR → merge cycle | ✅ Verified end-to-end |
+| Managed Identity → Storage Blob Data Contributor | ✅ Dev environment |
+| Key Vault Access Configuration | ✅ Switched to Vault Access Policy |
+| Managed Identity → Key Vault Get/List | ✅ Dev environment |
+
+---
+
+## 🧠 Technical Decisions
+
+| Decision | Reasoning |
+|---|---|
+| System-Assigned over User-Assigned Managed Identity | Recommended Azure pattern — lifecycle is tied to the resource itself, no separate identity to manage or rotate |
+| Vault Access Policy over pure RBAC for the Key Vault's data plane | Required specifically because ADF's runtime secret retrieval doesn't yet respect RBAC-only vaults in this configuration |
+| Fast-forward merge strategy | Keeps repository history linear and easy to reason about for a small-team / solo project |
+| Allow self-approval on PRs (for now) | Practical for a single-developer sprint; explicitly flagged as something to remove in a real team setting |
+
+---
+
+## 🚧 Problems & Solutions
+
+| Problem | Solution |
+|---|---|
+| Azure DevOps org invisible after first login | Reconnected the organization under "Default Directory" via Organization Settings → Microsoft Entra |
+| `main` branch editable directly, defeating the purpose of Git integration | Applied branch policy requiring PR + reviewer before merge |
+| "Operation not allowed by RBAC" when creating Key Vault secrets | Assigned `Key Vault Administrator` IAM role to own account first |
+| ADF Web Activity couldn't retrieve secrets even after RBAC role assignment | Switched Key Vault Access Configuration to "Vault access policy" and explicitly granted Get/List to the Managed Identity |
+
+---
+
+## 📚 Learnings
+
+- Git branch protection in ADF works identically in spirit to code-repo branch protection — but is enforced entirely at the Azure DevOps repo level, since ADF Studio has no native policy engine of its own.
+- RBAC and Access Policy are **not interchangeable** for Key Vault — data-plane secret operations (what ADF actually needs at runtime) depend on which access model is active, and the two can silently conflict if not deliberately chosen.
+- "Managed Identity" in the IAM role-assignment picker is its own member category, separate from "User" and "Group" — an easy source of a failed role assignment on a first attempt.
+
+## ✅ Week 2 Deliverables
+- [x] Azure DevOps organization and project fully configured
+- [x] ADF (Dev) Git-integrated with protected `main` branch
+- [x] Feature branch → PR → merge workflow verified end-to-end
+- [x] Managed Identity access to Storage and Key Vault resolved for Dev
+
+**Next week:** Build the actual dynamic ADF pipeline — linked services, HTTP source, ADLS sink, Lookup + ForEach parameterization pattern.
