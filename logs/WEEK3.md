@@ -22,3 +22,7 @@ Build a single, reusable, parameter-driven ADF pipeline (instead of one static p
 ### Day 1 — Linked Service: ADLS Gen2
 - Created `LS_ADLS`, authenticated via **System-Assigned Managed Identity** (per the access grant completed in Week 2) — no account key entered anywhere.
 - Ran **Test Connection** immediately after creation to confirm the RBAC role assignment from Week 2 had actually propagated (Azure role assignments can take a few minutes to become effective — this was factored into the testing sequence).
+
+### Day 2 — Linked Service: HTTP Source
+- Created `LS_HTTP`, pointing at a public raw-file endpoint used as the demo data source for this project (two CSV files: `bookings.csv`, `passengers.csv`).
+- Used **Anonymous** authentication since the demo source requires none — but deliberately still built out the **Key Vault linked service** in parallel this same day, specifically to simulate and document the production-realistic pattern (most real HTTP/API sources are *not* anonymous and would pull credentials from Key Vault via this exact linked service).
