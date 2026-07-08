@@ -26,3 +26,7 @@ Build a single, reusable, parameter-driven ADF pipeline (instead of one static p
 ### Day 2 — Linked Service: HTTP Source
 - Created `LS_HTTP`, pointing at a public raw-file endpoint used as the demo data source for this project (two CSV files: `bookings.csv`, `passengers.csv`).
 - Used **Anonymous** authentication since the demo source requires none — but deliberately still built out the **Key Vault linked service** in parallel this same day, specifically to simulate and document the production-realistic pattern (most real HTTP/API sources are *not* anonymous and would pull credentials from Key Vault via this exact linked service).
+
+### Day 3 — Linked Service: Key Vault + First Secret Retrieval Test
+- Created `LS_KeyVault`, authenticated via Managed Identity.
+- Verified with **Test Connection** — confirmed the Week 2 access-policy fix was correctly in place; no secrets are strictly required for the demo source, but the linked service is fully wired for the case where they are.
