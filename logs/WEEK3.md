@@ -30,3 +30,21 @@ Build a single, reusable, parameter-driven ADF pipeline (instead of one static p
 ### Day 3 — Linked Service: Key Vault + First Secret Retrieval Test
 - Created `LS_KeyVault`, authenticated via Managed Identity.
 - Verified with **Test Connection** — confirmed the Week 2 access-policy fix was correctly in place; no secrets are strictly required for the demo source, but the linked service is fully wired for the case where they are.
+
+### Day 4 — Runtime Parameter File Design
+- Designed the `params.json` structure to drive the pipeline dynamically:
+  ```json
+  {
+    "params": [
+      { "sourceUrl": "<endpoint>/bookings.csv", "syncFile": "bookings.csv" },
+      { "sourceUrl": "<endpoint>/passengers.csv", "syncFile": "passengers.csv" }
+    ]
+  }
+  ```
+- **Design rationale:** wrapping the array in a `params` key (rather than a bare top-level array) makes it far easier to reference cleanly inside a Lookup Activity's dynamic-content expressions later.
+- Uploaded `params.json` to a new `parameters` container in ADLS Gen2 (Dev).
+
+### Day 5 — Lookup Activity + ForEach Loop
+- Built the `Get Parameters` **Lookup Activity**, sourced from a new parameterized JSON dataset (`DS_Parameters`) pointed at the uploaded `params.json`.
+- Debugged the Lookup output shape directly (`value[0].params`) before wiring it into the loop — confirmed via a manual debug run rather than assuming the JSON structure would map cleanly.
+- Built the **ForEach Activity**, with `Items` set to the dynamic expression referencing the Lookup output's `params` array — this is what allows the loop to process an arbitrary number of source files without any pipeline changes.
