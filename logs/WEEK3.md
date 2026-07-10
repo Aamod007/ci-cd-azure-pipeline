@@ -48,3 +48,35 @@ Build a single, reusable, parameter-driven ADF pipeline (instead of one static p
 - Built the `Get Parameters` **Lookup Activity**, sourced from a new parameterized JSON dataset (`DS_Parameters`) pointed at the uploaded `params.json`.
 - Debugged the Lookup output shape directly (`value[0].params`) before wiring it into the loop — confirmed via a manual debug run rather than assuming the JSON structure would map cleanly.
 - Built the **ForEach Activity**, with `Items` set to the dynamic expression referencing the Lookup output's `params` array — this is what allows the loop to process an arbitrary number of source files without any pipeline changes.
+
+### Day 6 — Copy Activity (Parameterized Source + Sink)
+- Inside the ForEach loop, built the **Copy Activity**:
+  - **Source dataset** (`DS_Source`, HTTP/CSV) — parameterized with a `URL` dataset parameter, populated at runtime via `@item().sourceUrl`
+  - **Sink dataset** (`DS_Sink`, ADLS Gen2/CSV) — parameterized with a `file` dataset parameter, populated via `@item().syncFile`, writing into the `raw` container
+- Ran a full debug pass — both files (`bookings.csv`, `passengers.csv`) landed correctly in the `raw` container on the first successful run after resolving a minor dynamic-content reference typo.
+
+---
+
+## 🏗️ Objects Built This Week
+
+| Object | Type | Notes |
+|---|---|---|
+| `LS_ADLS` | Linked Service | Managed Identity auth |
+| `LS_HTTP` | Linked Service | Anonymous (demo source) |
+| `LS_KeyVault` | Linked Service | Managed Identity auth, built for future secrets |
+| `DS_Parameters` | Dataset | JSON, points at `params.json` |
+| `DS_Source` | Dataset | HTTP/CSV, parameterized `URL` |
+| `DS_Sink` | Dataset | ADLS Gen2/CSV, parameterized `file` |
+| `Get Parameters` | Lookup Activity | Reads `params.json` |
+| `ForEach Loop` | ForEach Activity | Iterates `params` array |
+| `Copy Activity` | Inside ForEach | HTTP → ADLS Gen2, fully dynamic |
+
+---
+
+## 🧠 Technical Decisions
+
+| Decision | Reasoning |
+|---|---|
+| One dynamic pipeline instead of N static pipelines | Adding a new source becomes a data change (edit JSON), not a code change (edit + redeploy pipeline) |
+| Config-driven via ADLS-stored JSON, not hardcoded pipeline parameters | In production, source lists change frequently (new URL requests are common) — storing config in the data lake avoids a redeploy for every list change |
+| Wrapping the params array in a `params` key | Simplifies dynamic-content expressions when referencing nested Lookup output |
