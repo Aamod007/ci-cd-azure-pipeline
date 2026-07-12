@@ -1,0 +1,10 @@
+[
+{
+"source_url":"Aamod007/ci-cd-azure-pipeline/refs/heads/main/bookings.csv",
+"sink_file":"bookings.csv"
+},
+{
+"source_url":"Aamod007/ci-cd-azure-pipeline/refs/heads/main/passengers.csv",
+"sink_file":"passengers.csv"
+}
+]
