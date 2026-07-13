@@ -97,8 +97,7 @@ This project solves all three by treating ADF as versioned infrastructure and us
 ## Complete Architecture
 
 ### High-Level Flow
-
-![Azure CI/CD Architecture](architecture.svg)
+![Azure CI/CD Architecture](images/architecture.svg)
 
 ### ADF "Live Mode" vs. Git Mode
 
