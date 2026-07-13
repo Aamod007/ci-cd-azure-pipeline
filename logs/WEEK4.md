@@ -16,6 +16,10 @@ Understand ARM template generation from both angles — the manual "Publish" but
 - YAML pipeline fundamentals (stages → jobs → steps)
 - Building and debugging the CI (`ci-build.yaml`) pipeline
 
+## 📸 Visuals
+![CI Pipeline](../images/pipeline.png)
+![ARM Template](../images/arm-published.png)
+
 ---
 
 ## 🗓️ Daily Breakdown

@@ -15,6 +15,9 @@ Build a single, reusable, parameter-driven ADF pipeline (instead of one static p
 - Copy Activity — HTTP → Azure Blob Storage
 - Pipeline-level parameters for on-demand runtime overrides
 
+## 📸 Visuals
+![Pipeline Execution](../images/pipeline-execution.png)
+
 ---
 
 ## 🗓️ Daily Breakdown

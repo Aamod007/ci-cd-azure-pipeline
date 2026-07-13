@@ -19,6 +19,9 @@ Understand the *why* behind CI/CD for data engineering before touching any tooli
 - Initial Git conceptual groundwork
 - Project planning and folder structure design
 
+## 📸 Visuals
+![Architecture Diagram](../images/architecture.svg)
+
 ---
 
 ## 🗓️ Daily Breakdown

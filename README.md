@@ -434,16 +434,28 @@ adf-cicd-project/
 
 ## Screenshots
 
-> _Add screenshots here before publishing:_
-- [ ] Architecture diagram (exported from draw.io / Excalidraw)
-- [ ] ADF Studio — Git configuration screen
-- [ ] Azure DevOps — Branch policy configuration
-- [ ] Pull Request approval screen
-- [ ] CI pipeline run — green checkmarks
-- [ ] CD pipeline — Dev/QA parallel deploy + Prod approval gate
-- [ ] Key Vault — Access Configuration screen
-- [ ] Managed Identity — Object ID confirmation
-- [ ] ARM template artifact contents
+Here are the key screenshots demonstrating the implementation of the CI/CD pipeline:
+
+### 1. Architecture Diagram
+![Architecture Diagram](images/architecture.svg)
+
+### 2. Azure Data Factory (ADF) Studio - Git Configuration
+![ADF Git Config](images/adf-git-config.png)
+
+### 3. ADF Pipeline Execution (Successful Run)
+![Pipeline Execution](images/pipeline-execution.png)
+
+### 4. Azure DevOps - Branch Policies
+![Branch Policy](images/branch-policy.png)
+
+### 5. Continuous Integration (CI) Pipeline
+![CI Pipeline](images/pipeline.png)
+
+### 6. Continuous Deployment (CD) Pipeline (Dev -> QA -> Prod)
+![CD Pipeline](images/cd-pipeline.png)
+
+### 7. Generated ARM Template Artifacts
+![ARM Template](images/arm-published.png)
 
 ---
 

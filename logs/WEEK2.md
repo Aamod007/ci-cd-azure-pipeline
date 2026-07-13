@@ -17,6 +17,10 @@ Move Azure Data Factory from an ungoverned "Live Mode only" state into a fully G
 - Role-Based Access Control (RBAC) — Storage Blob Data Contributor
 - Key Vault access resolution (RBAC vs. Access Policy)
 
+## 📸 Visuals
+![ADF Git Config](../images/adf-git-config.png)
+![Branch Policy](../images/branch-policy.png)
+
 ---
 
 ## 🗓️ Daily Breakdown
