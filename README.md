@@ -114,7 +114,7 @@ This project solves all three by treating ADF as versioned infrastructure and us
 | Service | Purpose |
 |---|---|
 | **Azure Data Factory** | Core ETL/orchestration engine; source of the ARM templates being deployed |
-| **Azure Data Lake Storage Gen 2** | Sink for pipeline output data; hierarchical namespace enabled |
+| **Azure Blob Storage** | Sink for pipeline output data; hierarchical namespace enabled |
 | **Azure Key Vault** | Centralized secrets management (RBAC-based access policy) |
 | **Azure DevOps – Repos** | Git-based source control, branch policies, pull requests |
 | **Azure DevOps – Pipelines** | YAML-based CI (build/export) and CD (deploy) automation |
