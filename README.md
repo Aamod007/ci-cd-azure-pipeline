@@ -38,12 +38,11 @@
 20. [Prerequisites](#prerequisites)
 21. [Installation Guide](#installation-guide)
 22. [Configuration Guide](#configuration-guide)
-23. [Screenshots](#screenshots)
-24. [Testing](#testing)
-25. [Challenges & Resolutions](#challenges--resolutions)
-26. [Future Enhancements](#future-enhancements)
-27. [Learning Outcomes](#learning-outcomes)
-28. [Weekly Logs](#weekly-logs)
+23. [Testing](#testing)
+24. [Challenges & Resolutions](#challenges--resolutions)
+25. [Future Enhancements](#future-enhancements)
+26. [Learning Outcomes](#learning-outcomes)
+27. [Weekly Logs](#weekly-logs)
 
 ---
 
@@ -428,33 +427,6 @@ adf-cicd-project/
 | `subscriptionId` | `<subscription-guid>` |
 
 **Service Connection naming:** avoid hyphens/special characters in the name referenced inside YAML — this caused a real deployment failure during this project (see [Challenges](#challenges--resolutions)).
-
----
-
-## Screenshots
-
-Here are the key screenshots demonstrating the implementation of the CI/CD pipeline:
-
-### 1. Architecture Diagram
-![Architecture Diagram](images/architecture.svg)
-
-### 2. Azure Data Factory (ADF) Studio - Git Configuration
-![ADF Git Config](images/adf-git-config.png)
-
-### 3. ADF Pipeline Execution (Successful Run)
-![Pipeline Execution](images/pipeline-execution.png)
-
-### 4. Azure DevOps - Branch Policies
-![Branch Policy](images/branch-policy.png)
-
-### 5. Continuous Integration (CI) Pipeline
-![CI Pipeline](images/pipeline.png)
-
-### 6. Continuous Deployment (CD) Pipeline (Dev -> QA -> Prod)
-![CD Pipeline](images/cd-pipeline.png)
-
-### 7. Generated ARM Template Artifacts
-![ARM Template](images/arm-published.png)
 
 ---
 
