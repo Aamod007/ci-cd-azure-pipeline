@@ -82,9 +82,9 @@ This project solves all three by treating ADF as versioned infrastructure and us
 
 ## Objectives
 
-- [x] Set up isolated **Dev, QA, and Production** environments in Azure, each with its own Data Factory, Storage Account (ADLS Gen2), and Key Vault.
+- [x] Set up isolated **Dev, QA, and Production** environments in Azure, each with its own Data Factory, Storage Account (Azure Blob Storage), and Key Vault.
 - [x] Connect ADF to **Git (Azure Repos)** and implement a **feature-branch workflow** protected by branch policies and pull requests.
-- [x] Build **dynamic, parameter-driven ADF pipelines** (HTTP → ADLS Gen2) instead of static, hardcoded pipelines.
+- [x] Build **dynamic, parameter-driven ADF pipelines** (HTTP → Azure Blob Storage) instead of static, hardcoded pipelines.
 - [x] Authenticate all inter-service communication using **System-Assigned Managed Identity** — zero hardcoded keys or secrets.
 - [x] Automate **ARM template generation** (Continuous Integration) using the official `@microsoft/azure-data-factory-utilities` npm package instead of manual "Publish" clicks.
 - [x] Build a **YAML-based Continuous Deployment pipeline** that promotes the ARM template through Dev → QA → Production with environment-specific parameter files.
@@ -228,7 +228,7 @@ Each environment is provisioned identically (same resource types, same RBAC patt
 **System-Assigned Managed Identity** is used everywhere instead of access keys or connection-string secrets:
 
 - Every Azure Data Factory instance automatically gets a system-assigned identity (visible under **Settings → Identity** in the portal).
-- This identity is granted the **Storage Blob Data Contributor** role (via Azure IAM → Add Role Assignment → select "Managed Identity" → filter by "Data Factory") on the ADLS Gen2 storage account.
+- This identity is granted the **Storage Blob Data Contributor** role (via Azure IAM → Add Role Assignment → select "Managed Identity" → filter by "Data Factory") on the Azure Blob Storage storage account.
 - The same identity pattern is used for Key Vault access.
 - **Why it matters:** no access keys are ever stored in linked service JSON, pipeline parameters, or Git — eliminating an entire class of credential-leak risk.
 
@@ -256,13 +256,13 @@ Lookup Activity (reads params.json from ADLS)
 ForEach Activity (iterates array of {sourceUrl, syncFile} pairs)
         │
         ▼
-   Copy Activity (HTTP source → ADLS Gen2 sink), fully parameterized
+   Copy Activity (HTTP source → Azure Blob Storage sink), fully parameterized
 ```
 
 ### Linked Services
 | Name | Type | Auth |
 |---|---|---|
-| `LS_ADLS` | ADLS Gen2 | System-Assigned Managed Identity |
+| `LS_ADLS` | Azure Blob Storage | System-Assigned Managed Identity |
 | `LS_HTTP` | HTTP (public REST/raw file endpoint) | Anonymous (demo source) |
 | `LS_KeyVault` | Azure Key Vault | System-Assigned Managed Identity |
 
@@ -279,7 +279,7 @@ These are intentionally **not** hardcoded into the pipeline logic — they're ov
 
 ## Dynamic Parameterization
 
-Rather than hardcoding source URLs and sink filenames into the pipeline, a `params.json` file stored in ADLS Gen2 (`parameters` container) drives the ForEach loop:
+Rather than hardcoding source URLs and sink filenames into the pipeline, a `params.json` file stored in Azure Blob Storage (`parameters` container) drives the ForEach loop:
 
 ```json
 {
@@ -397,7 +397,7 @@ adf-cicd-project/
 ## Installation Guide
 
 1. **Create Resource Groups:** `ADF-CICD-Dev`, `ADF-CICD-QA`, `ADF-CICD-Prod`
-2. **Provision per environment:** Data Factory (V2) → Storage Account (ADLS Gen2, hierarchical namespace ON) → Key Vault
+2. **Provision per environment:** Data Factory (V2) → Storage Account (Azure Blob Storage, hierarchical namespace ON) → Key Vault
 3. **Grant Managed Identity access:**
    - Storage: IAM → Add role assignment → `Storage Blob Data Contributor` → select Data Factory's managed identity
    - Key Vault: Access Configuration → `Vault access policy` → grant Get/List secret permissions to the same identity

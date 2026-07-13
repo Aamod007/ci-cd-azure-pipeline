@@ -14,7 +14,7 @@ Understand the *why* behind CI/CD for data engineering before touching any tooli
 - Azure account setup
 - Resource Group creation (Dev / QA / Prod)
 - Azure Data Factory instance creation (all 3 environments)
-- Storage Account (ADLS Gen2) provisioning
+- Storage Account (Azure Blob Storage) provisioning
 - Key Vault provisioning
 - Initial Git conceptual groundwork
 - Project planning and folder structure design
@@ -50,7 +50,7 @@ Understand the *why* behind CI/CD for data engineering before touching any tooli
 - **Naming mistake caught early:** first attempt accidentally named the Data Factory after the storage account convention instead of its own (`adf-storage-dev` instead of `adf-<project>-dev`). Deleted and recreated rather than patching via the ARM template UI, since it was faster at this stage of the project.
 - Confirmed deployment via the **Deployment → Template** view in the portal — first hands-on look at the ARM template that underlies every ADF resource, which becomes central to the CI/CD pipeline later.
 
-### Day 6 — Storage Account (ADLS Gen2) + Key Vault
+### Day 6 — Storage Account (Azure Blob Storage) + Key Vault
 - Provisioned the Storage Account for Dev, explicitly selecting:
   - **Standard performance tier**
   - **LRS** (Locally Redundant Storage — sufficient for this workload, no cross-region replication needed)
@@ -71,7 +71,7 @@ Understand the *why* behind CI/CD for data engineering before touching any tooli
 | Resource Group `ADF-CICD-QA` | QA | ✅ (created, configured in Week 2) |
 | Resource Group `ADF-CICD-Prod` | Prod | ✅ (created, configured in Week 5) |
 | Azure Data Factory (Dev) | Dev | ✅ Provisioned, not yet Git-connected |
-| Storage Account / ADLS Gen2 (Dev) | Dev | ✅ Hierarchical namespace confirmed |
+| Storage Account / Azure Blob Storage (Dev) | Dev | ✅ Hierarchical namespace confirmed |
 | Key Vault (Dev) | Dev | ✅ Provisioned, RBAC access issue noted |
 
 ---
@@ -81,7 +81,7 @@ Understand the *why* behind CI/CD for data engineering before touching any tooli
 | Decision | Reasoning |
 |---|---|
 | Separate resource group per environment | Cleaner RBAC scoping, cost isolation, simpler teardown |
-| ADLS Gen2 over plain Blob Storage | Hierarchical namespace required for data-lake-style folder semantics used later in pipeline design |
+| Azure Blob Storage over plain Blob Storage | Hierarchical namespace required for data-lake-style folder semantics used later in pipeline design |
 | LRS over GRS | Non-critical training workload; no cross-region DR requirement for this project's scope |
 | Delete-and-recreate over ARM-edit for the naming mistake | Faster at this stage; ARM template editing workflow intentionally deferred to when it's actually needed (Week 4) |
 
@@ -106,7 +106,7 @@ Understand the *why* behind CI/CD for data engineering before touching any tooli
 ## ✅ Week 1 Deliverables
 - [x] Architecture diagram (CI half + CD half)
 - [x] 3 Resource Groups provisioned
-- [x] Dev environment: Data Factory + Storage (ADLS Gen2) + Key Vault live
+- [x] Dev environment: Data Factory + Storage (Azure Blob Storage) + Key Vault live
 - [x] Project folder structure finalized
 - [x] Sprint plan for Weeks 2–5 documented
 

@@ -50,7 +50,7 @@ Move Azure Data Factory from an ungoverned "Live Mode only" state into a fully G
 
 ### Day 6 — Managed Identity → Storage RBAC
 - Located the Dev Data Factory's **System-Assigned Managed Identity** under Settings → Identity (Object ID confirmed — critical to verify this is the *system-assigned* identity, not accidentally a *user-assigned* one, which is not the recommended pattern).
-- Created the `raw` container in the Dev ADLS Gen2 account.
+- Created the `raw` container in the Dev Azure Blob Storage account.
 - Granted the identity the **Storage Blob Data Contributor** role via **IAM → Add role assignment**, selecting "Managed Identity" as the member type and filtering by the Data Factory's name specifically (a step that's easy to fumble if you search under the wrong member category).
 
 ### Day 7 — Key Vault Access Resolution

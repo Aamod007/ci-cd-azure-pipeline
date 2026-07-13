@@ -8,18 +8,18 @@
 Build a single, reusable, parameter-driven ADF pipeline (instead of one static pipeline per source file) — the pattern that makes environment promotion in later weeks actually meaningful, since a hardcoded pipeline can't safely move between environments.
 
 ## 📋 Scope for the Week
-- Linked Service creation: ADLS Gen2, HTTP, Key Vault
+- Linked Service creation: Azure Blob Storage, HTTP, Key Vault
 - Dataset design (parameterized, not hardcoded)
 - Lookup Activity — reading a runtime configuration file
 - ForEach Activity — dynamic iteration
-- Copy Activity — HTTP → ADLS Gen2
+- Copy Activity — HTTP → Azure Blob Storage
 - Pipeline-level parameters for on-demand runtime overrides
 
 ---
 
 ## 🗓️ Daily Breakdown
 
-### Day 1 — Linked Service: ADLS Gen2
+### Day 1 — Linked Service: Azure Blob Storage
 - Created `LS_ADLS`, authenticated via **System-Assigned Managed Identity** (per the access grant completed in Week 2) — no account key entered anywhere.
 - Ran **Test Connection** immediately after creation to confirm the RBAC role assignment from Week 2 had actually propagated (Azure role assignments can take a few minutes to become effective — this was factored into the testing sequence).
 
@@ -42,7 +42,7 @@ Build a single, reusable, parameter-driven ADF pipeline (instead of one static p
   }
   ```
 - **Design rationale:** wrapping the array in a `params` key (rather than a bare top-level array) makes it far easier to reference cleanly inside a Lookup Activity's dynamic-content expressions later.
-- Uploaded `params.json` to a new `parameters` container in ADLS Gen2 (Dev).
+- Uploaded `params.json` to a new `parameters` container in Azure Blob Storage (Dev).
 
 ### Day 5 — Lookup Activity + ForEach Loop
 - Built the `Get Parameters` **Lookup Activity**, sourced from a new parameterized JSON dataset (`DS_Parameters`) pointed at the uploaded `params.json`.
@@ -52,7 +52,7 @@ Build a single, reusable, parameter-driven ADF pipeline (instead of one static p
 ### Day 6 — Copy Activity (Parameterized Source + Sink)
 - Inside the ForEach loop, built the **Copy Activity**:
   - **Source dataset** (`DS_Source`, HTTP/CSV) — parameterized with a `URL` dataset parameter, populated at runtime via `@item().sourceUrl`
-  - **Sink dataset** (`DS_Sink`, ADLS Gen2/CSV) — parameterized with a `file` dataset parameter, populated via `@item().syncFile`, writing into the `raw` container
+  - **Sink dataset** (`DS_Sink`, Azure Blob Storage/CSV) — parameterized with a `file` dataset parameter, populated via `@item().syncFile`, writing into the `raw` container
 - Ran a full debug pass — both files (`bookings.csv`, `passengers.csv`) landed correctly in the `raw` container on the first successful run after resolving a minor dynamic-content reference typo.
 
 ### Day 7 — Pipeline-Level Parameters (Runtime Overrides)
@@ -72,10 +72,10 @@ Build a single, reusable, parameter-driven ADF pipeline (instead of one static p
 | `LS_KeyVault` | Linked Service | Managed Identity auth, built for future secrets |
 | `DS_Parameters` | Dataset | JSON, points at `params.json` |
 | `DS_Source` | Dataset | HTTP/CSV, parameterized `URL` |
-| `DS_Sink` | Dataset | ADLS Gen2/CSV, parameterized `file` |
+| `DS_Sink` | Dataset | Azure Blob Storage/CSV, parameterized `file` |
 | `Get Parameters` | Lookup Activity | Reads `params.json` |
 | `ForEach Loop` | ForEach Activity | Iterates `params` array |
-| `Copy Activity` | Inside ForEach | HTTP → ADLS Gen2, fully dynamic |
+| `Copy Activity` | Inside ForEach | HTTP → Azure Blob Storage, fully dynamic |
 | Pipeline parameters | `backfillFlag`, `incrementalFlag` | Runtime-only overrides |
 
 ---
