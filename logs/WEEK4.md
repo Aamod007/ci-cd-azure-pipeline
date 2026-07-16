@@ -2,7 +2,7 @@
 
 ![Week](https://img.shields.io/badge/Week-4%2F5-blue?style=flat-square)
 ![Focus](https://img.shields.io/badge/Focus-CI%20Pipeline-orange?style=flat-square)
-![Status](https://img.shields.io/badge/Status-Day_3_Complete-yellow?style=flat-square)
+![Status](https://img.shields.io/badge/Status-Day_4_Complete-yellow?style=flat-square)
 
 ## ðŸŽ¯ Sprint Goal
 Understand ARM template generation from both angles â€” the manual "Publish" button first, then the fully automated CI pipeline equivalent â€” before relying on automation blindly.
