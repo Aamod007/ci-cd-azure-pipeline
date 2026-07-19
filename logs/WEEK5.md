@@ -35,3 +35,7 @@ Close the loop: take the ARM template artifact produced in Week 4 and promote it
 - Created the Azure DevOps **Service Connection** (Azure Resource Manager type), which auto-provisions a Service Principal / App Registration in Azure AD.
 - **Scoping decision:** initially scoped the connection to a single resource group, then widened it to cover all three project resource groups â€” documented trade-off: one service connection with broad scope is operationally simpler to maintain than three narrowly-scoped connections, appropriate for a project of this size; a stricter, single-resource-group-per-connection model is noted as more appropriate for larger, multi-team, higher-sensitivity projects.
 
+### Day 3 â€” ARM Parameter Override Files
+- Created `cicd/arm-params/dev.json`, `qa.json`, and `prod.json`, each cloned from the Week 4 published `ARMTemplateParametersForFactory.json` and edited to point at the correct environment's Key Vault, storage account, and API endpoint values.
+- This is the file set responsible for preventing the most damaging class of deployment bug in this entire project: **a Data Factory in one environment silently pointing at another environment's storage or secrets.**
+
