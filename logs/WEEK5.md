@@ -30,3 +30,8 @@ Close the loop: take the ARM template artifact produced in Week 4 and promote it
 - Repeated the Week 2 RBAC pattern for both new environments: Managed Identity â†’ `Storage Blob Data Contributor`, Key Vault â†’ Access Policy â†’ Get/List permissions.
 - **Consistency check:** deliberately re-used the exact same naming convention across environments (`adf-<project>-{env}`) so that ARM parameter overrides later would only need to change a predictable, minimal set of values.
 
+### Day 2 â€” Variable Groups & Service Connection
+- Created three Library Variable Groups: `dev-group`, `qa-group`, `prod-group`, each holding `resourceGroup`, `dataFactoryName`, and `subscriptionId` for its environment.
+- Created the Azure DevOps **Service Connection** (Azure Resource Manager type), which auto-provisions a Service Principal / App Registration in Azure AD.
+- **Scoping decision:** initially scoped the connection to a single resource group, then widened it to cover all three project resource groups â€” documented trade-off: one service connection with broad scope is operationally simpler to maintain than three narrowly-scoped connections, appropriate for a project of this size; a stricter, single-resource-group-per-connection model is noted as more appropriate for larger, multi-team, higher-sensitivity projects.
+
