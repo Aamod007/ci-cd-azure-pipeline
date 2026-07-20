@@ -47,3 +47,18 @@ Close the loop: take the ARM template artifact produced in Week 4 and promote it
   3. `AzureResourceManagerTemplateDeployment@3` â€” deploys in **Incremental** mode, using `arm-params/${{ parameters.environment }}.json` as the override file
   4. `AzurePowerShell@5` (post-deployment) â€” runs the same script with `-predeployment $false -deleteDeployment $true`, removing orphaned objects and restarting previously-active triggers
 
+### Day 5 â€” Wiring Dev + QA Stages & First Debugging Round
+- Wired `DeployToDev` and `DeployToQA` stages into the orchestrator pipeline, both calling `cd-deploy.yaml` with their respective variable group and `environment` parameter.
+- First run surfaced three distinct, sequential bugs â€” each fixed and re-run individually:
+  - **Variable group name mismatch** (`group dev` referenced in YAML vs. `dev-group` actually created in Library) â†’ standardized naming and fixed the reference
+  - **Hardcoded `qa.json` reference** inside `cd-deploy.yaml` regardless of which environment was deploying â†’ introduced the `environment` parameter and switched to `arm-params/${{ parameters.environment }}.json`
+  - **`DeployToDev` pulling QA's variable group by copy-paste mistake**, causing it to look for `ADF-QA` inside the `Dev` resource group â†’ corrected the per-stage variable group reference
+- After fixes: full green run, both Dev and QA deployed in parallel, verified by opening each environment's ADF Studio and confirming linked services pointed at the **correct** environment's storage and Key Vault â€” the single most important verification step in the whole project.
+
+### Day 6 â€” Production Stage, Approval Gate & Trigger Continuity
+- Created an Azure DevOps **Environment** named `PROD`, added an **Approval** check with the project owner as the sole approver.
+- Converted the Production stage's job type from a standard `job` to a `deployment` job â€” required specifically to reference an Environment and therefore gate on approval.
+- Set `dependsOn: DeployToQA` explicitly on the Production stage (an earlier draft was missing this and would have deployed to Prod and QA simultaneously â€” caught before the first real run).
+- Ran the full pipeline end-to-end for the first time: Dev and QA deployed automatically and in parallel; the pipeline then **paused and waited** at the Production gate exactly as designed, requiring an explicit manual approval before continuing.
+- Approved the gate, watched Production deployment complete, then verified in the Prod ADF Studio: pipelines present, linked services correctly pointed at Prod's storage and Key Vault, and â€” critically â€” the schedule trigger came back **on** automatically via the post-deployment script, exactly matching its pre-deployment state.
+
