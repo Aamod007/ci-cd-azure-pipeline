@@ -39,3 +39,11 @@ Close the loop: take the ARM template artifact produced in Week 4 and promote it
 - Created `cicd/arm-params/dev.json`, `qa.json`, and `prod.json`, each cloned from the Week 4 published `ARMTemplateParametersForFactory.json` and edited to point at the correct environment's Key Vault, storage account, and API endpoint values.
 - This is the file set responsible for preventing the most damaging class of deployment bug in this entire project: **a Data Factory in one environment silently pointing at another environment's storage or secrets.**
 
+### Day 4 â€” Building `cd-deploy.yaml` (Reusable Deployment Template)
+- Authored the reusable deploy template, parameterized by `dataFactoryName`, `resourceGroup`, `subscriptionId`, `environment`, and `azureResourceManagerConnection`.
+- Step sequence:
+  1. `DownloadPipelineArtifact@2` â€” pulls the `ARMTemplate` artifact published by the CI stage
+  2. `AzurePowerShell@5` (pre-deployment) â€” runs the Microsoft-provided script with `-predeployment $true`, stopping any currently running triggers before deployment touches the factory
+  3. `AzureResourceManagerTemplateDeployment@3` â€” deploys in **Incremental** mode, using `arm-params/${{ parameters.environment }}.json` as the override file
+  4. `AzurePowerShell@5` (post-deployment) â€” runs the same script with `-predeployment $false -deleteDeployment $true`, removing orphaned objects and restarting previously-active triggers
+
