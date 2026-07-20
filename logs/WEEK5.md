@@ -62,3 +62,82 @@ Close the loop: take the ARM template artifact produced in Week 4 and promote it
 - Ran the full pipeline end-to-end for the first time: Dev and QA deployed automatically and in parallel; the pipeline then **paused and waited** at the Production gate exactly as designed, requiring an explicit manual approval before continuing.
 - Approved the gate, watched Production deployment complete, then verified in the Prod ADF Studio: pipelines present, linked services correctly pointed at Prod's storage and Key Vault, and â€” critically â€” the schedule trigger came back **on** automatically via the post-deployment script, exactly matching its pre-deployment state.
 
+### Day 7 â€” Final Hardening, Parameters File Safety Check & Documentation
+- Deliberately tested a failure scenario before calling the project complete: uploaded an incorrect file type (`.txt` instead of `.json`) to the Production `parameters` container to confirm the pipeline fails safely and legibly rather than deploying bad configuration â€” confirmed it does, and documented this as the reason the parameters file upload for Production is kept as a **manual, reviewed step** rather than an automated CLI task in this project's design (see [Security Implementation](../README.md#security-implementation) in the master README).
+- Re-ran the corrected version successfully.
+- Wrote the final master `README.md` and consolidated all five weekly logs into their final form.
+
+---
+  +
+## ðŸ—ï¸ Deliverables Built This Week
+
+| Item | Status |
+|---|---|
+| QA + Prod environments (Data Factory, Storage, Key Vault, RBAC) | âœ… |
+| `dev-group` / `qa-group` / `prod-group` Variable Groups | âœ… |
+| Azure Resource Manager Service Connection | âœ… Scoped to all 3 resource groups |
+| `cicd/arm-params/{dev,qa,prod}.json` | âœ… |
+| `cicd/cd-deploy.yaml` reusable deployment template | âœ… |
+| `DeployToDev`, `DeployToQA` stages | âœ… Automated, parallel-eligible |
+| `DeployToProd` stage | âœ… Gated behind `PROD` Environment approval |
+| Full pipeline dry run (Build â†’ Dev â†’ QA â†’ Prod) | âœ… Verified end-to-end |
+| Master README + 5 weekly logs | âœ… Completed |
+
+---
+
+## ðŸ§  Technical Decisions
+
+| Decision | Reasoning |
+|---|---|
+| Single broadly-scoped Service Connection | Simpler operational overhead for a project of this size; documented as a trade-off, not a universal recommendation |
+| `Incremental` deployment mode for all environments | Prevents accidental deletion of unrelated resources in the resource group; `Complete` mode is explicitly avoided |
+| Manual parameters-file upload for Production only | Deliberate "automation vs. safety" trade-off â€” the highest-blast-radius file in the pipeline gets a human review step, even though it could technically be automated |
+| `deployment` job type (not `job`) for the Production stage | Required to attach an Azure DevOps Environment and therefore enforce the approval gate |
+| Explicit `dependsOn: DeployToQA` on Production | Prevents Production from deploying in parallel with QA â€” sequencing must be intentional, not assumed from stage order in the file |
+
+---
+
+## ðŸš§ Problems & Solutions
+
+| Problem | Solution |
+|---|---|
+| `variable group could not be found` | Corrected mismatched variable group name reference in YAML |
+| ARM parameter file hardcoded to `qa.json` regardless of target environment | Introduced dynamic `environment` parameter: `arm-params/${{ parameters.environment }}.json` |
+| Dev stage referencing QA's variable group | Fixed per-stage variable group binding |
+| Production initially deploying in parallel with QA instead of after it | Added explicit `dependsOn: DeployToQA` |
+| Production deployment failed â€” wrong file type uploaded to `parameters` container | Confirmed pipeline fails safely; re-uploaded correct `.json` file; documented as an intentional manual checkpoint |
+| Duplicate/ambiguous job naming when copying the Deploy job across environments | Renamed each job uniquely (`DeployToDev`, `DeployToQA`, `DeployToProd`) |
+
+---
+
+## ðŸ“š Learnings
+
+- The Production approval gate isn't just a checkbox â€” it fundamentally changes the job type required in YAML (`deployment` vs. `job`), which has real structural implications for how the pipeline is authored, not just how it behaves at runtime.
+- Testing a **failure path** deliberately (the bad parameters file) before declaring the project done surfaced more confidence in the pipeline's safety than any number of successful runs would have on their own.
+- Environment parity, established carefully back in Week 1 and Week 2, is what made the Week 5 parameter-override files simple, predictable, and low-risk to write â€” most of the "hard work" of a safe CD pipeline actually happens in environment setup, long before any deployment YAML is written.
+- Pre/post deployment scripts solve a real, specific gap (ARM's inability to safely delete removed ADF objects) rather than being boilerplate â€” understanding *why* they run twice, with different flags, was necessary to trust the automation rather than just copy it.
+
+---
+
+## ðŸ Internship Summary
+
+Over five weeks, this project moved Azure Data Factory from an ungoverned, single-developer "Live Mode" tool into a fully version-controlled, environment-isolated, approval-gated CI/CD pipeline modeled on real data engineering team practices:
+
+- **Week 1** established the multi-environment Azure foundation (Dev/QA/Prod resource groups, Data Factory, Storage, Key Vault).
+- **Week 2** introduced Git governance â€” branch protection, pull requests, and the Managed Identity access model that removed hardcoded credentials entirely.
+- **Week 3** replaced static, single-purpose pipelines with one dynamic, config-driven pipeline capable of processing an arbitrary number of sources without code changes.
+- **Week 4** built and validated the Continuous Integration half of the pipeline â€” automated ARM template export, matched byte-for-byte against the manual Publish baseline.
+- **Week 5** closed the loop with a fully automated, approval-gated Continuous Deployment pipeline promoting the same artifact safely through Dev, QA, and Production.
+
+Every problem documented across these logs â€” YAML indentation errors, variable group mismatches, RBAC vs. Access Policy confusion, a deliberately-tested bad parameters file â€” was encountered and resolved hands-on, not abstracted away. The resulting pipeline reflects working, tested infrastructure, not a theoretical walkthrough.
+
+## âœ… Week 5 Deliverables
+- [x] QA and Production environments fully live and RBAC-configured
+- [x] Complete CD pipeline: Dev â†’ QA â†’ Prod with approval gate
+- [x] Pre/post deployment trigger-safety scripts verified in production
+- [x] Deliberate failure-path test completed and documented
+- [x] Full documentation set (master README + 5 weekly logs) finalized
+
+---
+
+**Project Status:** âœ… Complete â€” see [`README.md`](../README.md) for full architecture, setup, and configuration reference.
