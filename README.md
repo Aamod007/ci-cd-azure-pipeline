@@ -58,7 +58,7 @@ Rather than treating ADF as a UI-only drag-and-drop tool, this project treats it
 |---|---|
 | Project Type | Self-directed Cloud/Data Engineering training project |
 | Institution | `Futurence` |
-| Mentor / Guide | `Aalekh Rai` |
+| Mentor / Guide | `Nishant Thakur` |
 | Duration | 5 Weeks |
 | Cloud Provider | Microsoft Azure |
 | Primary Service | Azure Data Factory (ADF) |
